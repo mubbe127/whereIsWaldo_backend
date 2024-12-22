@@ -1,6 +1,9 @@
 import characters from "../utils/characters.js";
 import prisma from "../model/prismaClient.js";
 
+
+// ADD LOGIC FOR STORING GAME DATA IN SESSION BETWEEN DIFFERENT GAMES RUNNING AT SAME TIME 
+
 async function gameOver(req, res) {
   const gameEndTime = Date.now();
   const gameTime = (gameEndTime - req.session.gameStartTime) / 1000;
