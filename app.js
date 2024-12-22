@@ -44,7 +44,7 @@ app.post('/api/game/:gameId', checkPosition)
 app.get('/api/game/:gameId', startGame)
 app.post('/api/game/score', storeUsername)
 
-app.get('/api/restartGame/:gameId', (req, res) => {
+/*app.get('/api/restartGame/:gameId', (req, res) => {
     req.session.destroy((err) => {
       if (err) {
         console.error('Failed to destroy session:', err);
@@ -55,6 +55,22 @@ app.get('/api/restartGame/:gameId', (req, res) => {
       res.clearCookie('connect.sid');
       res.redirect(`/api/game/${gameId}`); // Redirect to the login page
     });
+  }); */
+
+
+  app.get('/api/restartGame/:gameId', (req, res) => {
+   
+    const gameId =Number(req.params.gameId)
+    console.log("restarting game", gameId )
+    if(gameId===1){
+     req.session.universe11= undefined
+     } else {
+      console.log()
+      req.session.cyberpunkCity= undefined
+     }   
+     res.redirect(`/api/game/${gameId}`); 
   });
+
+
 
 app.listen(4100, () => console.log("app listening on port 4100!"))  

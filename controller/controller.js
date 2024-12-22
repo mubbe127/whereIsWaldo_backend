@@ -5,20 +5,27 @@ import prisma from "../model/prismaClient.js";
 // ADD LOGIC FOR STORING GAME DATA IN SESSION BETWEEN DIFFERENT GAMES RUNNING AT SAME TIME 
 
 async function gameOver(req, res) {
+  const gameId = Number(req.params.gameId )
+  let gameSession;
+  if(gameId===1){
+   gameSession= req.session.universe11
+  } else {
+    gameSession = req.session.cyberpunkCity
+  }
   const gameEndTime = Date.now();
-  const gameTime = (gameEndTime - req.session.gameStartTime) / 1000;
-  const foundCharacters = req.session.foundCharacters;
+  const gameTime = (gameEndTime -  gameSession.gameStartTime) / 1000;
+  const foundCharacters = gameSession.foundCharacters;
   console.log(gameTime);
   const { highscore, userscore } = await getScore(gameTime);
-  req.session.highscore = highscore;
-  req.session.userscore = userscore;
-  req.session.gameOver = true;
+ gameSession.highscore = highscore;
+ gameSession.userscore = userscore;
+ gameSession.gameOver = true;
   res.status(201).json({
     foundCharacters,
     userscore,
     highscore,
     foundCharacter: foundCharacters[2],
-    gameOver: req.session.gameOver,
+    gameOver:  gameSession.gameOver,
     message: "Game over",
   });
 }
@@ -70,12 +77,18 @@ const storeUsername = async (req, res) => {
   }
 };
 const checkPosition = async (req, res) => {
-  console.log("Req body", req.body, req.session);
+
   console.log("hej")
-  
+  const gameId = Number(req.params.gameId )
+  let gameSession;
+  if(gameId===1){
+   gameSession= req.session.universe11
+  } else {
+    gameSession = req.session.cyberpunkCity
+  }
+  console.log("Req body", req.body, gameSession);
   const { position, characterId } = req.body;
   let foundCharacter;
-  const gameId = Number(req.params.gameId )
   const gameCharacters = gameId===1 ? characters.universe11 : characters.cyberpunkCity
   gameCharacters.forEach((character) => {
     if (
@@ -89,25 +102,25 @@ const checkPosition = async (req, res) => {
       console.log(foundCharacter)
      
       if (
-        !req.session.foundCharacters.some(
+        !gameSession.foundCharacters.some(
           (character) => character.id === foundCharacter.id
         )
       ) {
-        req.session.foundCharacters.push(foundCharacter);
+        gameSession.foundCharacters.push(foundCharacter);
       }
     }
   });
-  if (req.session.foundCharacters.length === 3) {
+  if (gameSession.foundCharacters.length === 3) {
     gameOver(req, res);
   } else if (foundCharacter) {
     res.status(201).json({
       foundCharacter,
-      foundCharacters: req.session.foundCharacters,
+      foundCharacters: gameSession.foundCharacters,
       message: `You found character with id: ${foundCharacter.id}`,
     });
   } else {
     res.status(201).json({
-      foundCharacters: req.session.foundCharacters,
+      foundCharacters: gameSession.foundCharacters,
       message: "No character found",
     });
   }
@@ -132,15 +145,32 @@ const startGame = async (req, res) => {
     }
     return array;
   }
-  console.log(req.session);
-  if (req.session.existingGame) {
-    const gameCharacters = req.session.gameCharacters;
-    const foundCharacters = req.session.foundCharacters || [];
-    const userscore = req.session.userscore || false;
-    const highscore = req.session.highscore || false;
-    const gameOver = req.session.gameOver || false;
-    const gameStartTime = req.session.gameStartTime
-    const existingGame = req.session.existingGame
+  const gameId = Number(req.params.gameId )
+  if (!req.session.universe11) {
+    console.log("reset universe session")
+    req.session.universe11 = {}
+  }
+
+  if(!req.session.cyberpunkCity){
+    console.log("reset cyber session")
+    req.session.cyberpunkCity= {}
+  }
+  let gameSession;
+  if(gameId===1){
+   gameSession= req.session.universe11
+  } else {
+    gameSession = req.session.cyberpunkCity
+  }
+ 
+
+  if (gameSession.existingGame) {
+    const gameCharacters = gameSession.gameCharacters;
+    const foundCharacters = gameSession.foundCharacters || [];
+    const userscore = gameSession.userscore || false;
+    const highscore = gameSession.highscore || false;
+    const gameOver = gameSession.gameOver || false;
+    const gameStartTime = gameSession.gameStartTime
+    const existingGame = gameSession.existingGame
     
 
     res.status(201).json({
@@ -155,17 +185,16 @@ const startGame = async (req, res) => {
 
     });
   } else {
-    const gameId = Number(req.params.gameId)
     console.log("Start game");
-    console.log("Setting req", req.session);
-    req.session.existingGame = true;
-    req.session.foundCharacters = [];
-    const foundCharacters = req.session.foundCharacters;
+    console.log("Setting req", gameSession);
+    gameSession.existingGame = true;
+    gameSession.foundCharacters = [];
+    const foundCharacters =gameSession.foundCharacters;
     const gameCharacters = randomCharacters(gameId);
-    req.session.gameCharacters = gameCharacters;
+    gameSession.gameCharacters = gameCharacters;
     console.log(gameCharacters);
     const gameStartTime = Date.now();
-    req.session.gameStartTime = gameStartTime;
+    gameSession.gameStartTime = gameStartTime;
 
     res
       .status(201)
