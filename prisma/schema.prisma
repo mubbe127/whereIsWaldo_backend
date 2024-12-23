@@ -13,14 +13,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model score {
-  id               Int            @id @default(autoincrement())
-  username         String         @default("Anonymous")
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  gameTime         Float
+  model Score {
+    id               Int            @id @default(autoincrement())
+    username         String         @default("Anonymous")
+    createdAt        DateTime       @default(now())
+    updatedAt        DateTime       @updatedAt
+    gameTime         Float
+    gameId           Int            
+
+    game             Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
 
-}
-  
+  }
+
+  model Game {
+
+
+    id              Int              @id @default(autoincrement())
+    name            String            
+    score           Score[]
+  }
+    
   

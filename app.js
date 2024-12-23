@@ -42,7 +42,7 @@ app.use(session({
   
 app.post('/api/game/:gameId', checkPosition)
 app.get('/api/game/:gameId', startGame)
-app.post('/api/game/score', storeUsername)
+app.post('/api/score', storeUsername)
 
 /*app.get('/api/restartGame/:gameId', (req, res) => {
     req.session.destroy((err) => {
