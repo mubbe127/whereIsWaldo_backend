@@ -13,13 +13,12 @@ import { checkPosition, startGame, storeUsername } from "./controller/controller
 
 const app = express();
 
-app.use(
-  cors({
-    origin:true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, // If cookies or tokens are used
-  })
-);
+const app = express();
+app.use(cors({
+  origin: '*', // Replace with your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true, // No cookies or credentials involved
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
