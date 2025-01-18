@@ -82,6 +82,7 @@ const storeUsername = async (req, res) => {
 };
 const checkPosition = async (req, res) => {
   console.log("hej");
+  console.log(req.session)
   const gameId = Number(req.params.gameId);
   let gameSession;
   if (gameId === 1) {
@@ -174,6 +175,7 @@ const startGame = async (req, res) => {
     const gameOver = gameSession.gameOver || false;
     const gameStartTime = gameSession.gameStartTime;
     const existingGame = gameSession.existingGame;
+    console.log(req.session)
 
     res.status(201).json({
       gameOver,
@@ -196,6 +198,7 @@ const startGame = async (req, res) => {
     console.log(gameCharacters);
     const gameStartTime = Date.now();
     gameSession.gameStartTime = gameStartTime;
+    console.log(req.session)
 
     res
       .status(201)
