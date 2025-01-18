@@ -13,7 +13,6 @@ import { checkPosition, startGame, storeUsername } from "./controller/controller
 
 const app = express();
 
-const app = express();
 app.use(cors({
   origin: '*', // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
