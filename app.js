@@ -14,7 +14,7 @@ import { checkPosition, startGame, storeUsername } from "./controller/controller
 const app = express();
 
 app.use(cors({
-  origin: 'https://wereiswaldo-mubbe127.netlify.app', // Replace with your frontend URL
+  origin: ['https://wereiswaldo-mubbe127.netlify.app', "http://localhost:5173"], // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // No cookies or credentials involved
 }));
