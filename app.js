@@ -25,7 +25,7 @@ app.use(express.static("public"));
 app.use(session({
   secret: 'your-secret-key',  // Replace with a strong secret key
   resave: false,              // Don't save unchanged sessions
-  saveUninitialized: true,    // Don't save uninitialized sessions
+  saveUninitialized: false,    // Don't save uninitialized sessions
   cookie: {
       maxAge: 10 * 60 * 1000, // Cookie expiration time in milliseconds
       httpOnly: true,         // Prevent JavaScript access to the cookie
