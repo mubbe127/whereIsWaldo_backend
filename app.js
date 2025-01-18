@@ -23,16 +23,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
 app.use(session({
-    secret: 'your-secret-key',  // Replace with a strong secret key
-    resave: false,              // Don't save unchanged sessions
-    saveUninitialized: true,   // Don't save uninitialized sessions
-    cookie: {
-      maxAge: 10* 60 *1000,  // Cookie expiration time in milliseconds
-      httpOnly: true, // Make cookie inaccessible to JavaScript
-      secure: false,  // Should be true in production if using HTTPS
-       // Allow cross-origin cookies
-    }
-  }));
+  secret: 'your-secret-key',  // Replace with a strong secret key
+  resave: false,              // Don't save unchanged sessions
+  saveUninitialized: true,    // Don't save uninitialized sessions
+  cookie: {
+      maxAge: 10 * 60 * 1000, // Cookie expiration time in milliseconds
+      httpOnly: true,         // Prevent JavaScript access to the cookie
+      secure: true,           // Ensure cookies are sent over HTTPS only
+      sameSite: 'none',       // Allow cross-origin cookies (e.g., if frontend and backend are on different domains)
+  }
+}));
   
 app.post('/api/game/:gameId', checkPosition)
 app.get('/api/game/:gameId', startGame)
