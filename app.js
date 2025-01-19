@@ -1,7 +1,11 @@
-
+import dotenv from "dotenv";
 import expressSession from 'express-session';
 // Load the appropriate environment file based on NODE_ENV
-
+const envFile =
+  process.env.NODE_ENV === "production"
+    ? ".env.production"
+    : ".env.development";
+dotenv.config({ path: envFile });
 import express, { Router } from "express";
 import prisma from "./model/prismaClient.js";
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
@@ -35,7 +39,8 @@ app.use(
     },
     secret: 'a santa at nasa',
     resave: false,
-    secure:false,
+    secure:true,
+    sameSite:"none",
     saveUninitialized: false,
     store: new PrismaSessionStore(
       new PrismaClient(),
