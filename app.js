@@ -22,11 +22,6 @@ app.use(cors({
   credentials: true, // No cookies or credentials 
 }));
 
-app.use(function(req, res, next) { // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
@@ -39,6 +34,8 @@ app.use(
     secret: 'a santa at nasa',
     resave: false,
     saveUninitialized: false,
+    secure:true,
+    sameSite: "none",
     store: new PrismaSessionStore(
       new PrismaClient(),
       {
