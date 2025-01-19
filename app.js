@@ -38,7 +38,7 @@ app.use(
       new PrismaClient(),
       {
         checkPeriod: 2 * 60 * 1000,  //ms
-        dbRecordIdIsSessionId: true,
+        dbRecordIdIsSessionId: false,
         dbRecordIdFunction: undefined,
       }
     )
