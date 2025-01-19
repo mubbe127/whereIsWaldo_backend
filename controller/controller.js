@@ -33,6 +33,7 @@ async function gameOver(req, res) {
 async function getScore(gameTime, gameId) {
   
   try {
+    console.log("thegaaaaameID",gameId)
     const userscore = await prisma.score.create({
       data: {
         gameTime: gameTime,
