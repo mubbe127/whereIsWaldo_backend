@@ -12,6 +12,7 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 
 import cors from 'cors';
 import { checkPosition, startGame, storeUsername } from "./controller/controller.js";
+import { PrismaClient } from "@prisma/client";
 
 const app = express();
 
@@ -31,10 +32,10 @@ app.use(
      maxAge: 7 * 24 * 60 * 60 * 1000 // ms
     },
     secret: 'a santa at nasa',
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     store: new PrismaSessionStore(
-      prisma,
+      new PrismaClient(),
       {
         checkPeriod: 2 * 60 * 1000,  //ms
         dbRecordIdIsSessionId: true,
