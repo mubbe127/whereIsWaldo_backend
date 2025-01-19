@@ -20,8 +20,6 @@ app.use(cors({
   origin: ['https://wereiswaldo-mubbe127.netlify.app', "http://localhost:5173"], // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // No cookies or credentials 
-  secure:true,
-  sameSite: "none"
 }));
 
 app.use(express.json());
@@ -35,6 +33,8 @@ app.use(
     },
     secret: 'a santa at nasa',
     resave: false,
+    secure:true,
+    sameSite: "none",
     saveUninitialized: false,
     store: new PrismaSessionStore(
       new PrismaClient(),
