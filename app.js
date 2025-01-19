@@ -21,7 +21,7 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // No cookies or credentials 
   secure:true,
-  sameSite:"lax"
+  sameSite: "none"
 }));
 
 app.use(express.json());
