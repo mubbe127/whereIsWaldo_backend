@@ -1,11 +1,7 @@
-import dotenv from "dotenv";
+
 import expressSession from 'express-session';
 // Load the appropriate environment file based on NODE_ENV
-const envFile =
-  process.env.NODE_ENV === "production"
-    ? ".env.production"
-    : ".env.development";
-dotenv.config({ path: envFile });
+
 import express, { Router } from "express";
 import prisma from "./model/prismaClient.js";
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
@@ -17,7 +13,7 @@ import { PrismaClient } from "@prisma/client";
 const app = express();
 
 app.use(cors({
-  origin: ['https://wereiswaldo-mubbe127.netlify.app', "http://localhost:5173"], // Replace with your frontend URL
+  origin: ['https://wereiswaldo-mubbe127.netlify.app'], // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // No cookies or credentials 
 }));
@@ -39,8 +35,7 @@ app.use(
     },
     secret: 'a santa at nasa',
     resave: false,
-    secure:true,
-    sameSite: "none",
+    secure:false,
     saveUninitialized: false,
     store: new PrismaSessionStore(
       new PrismaClient(),
