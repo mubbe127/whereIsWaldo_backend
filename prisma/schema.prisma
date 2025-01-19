@@ -23,15 +23,18 @@ datasource db {
 
     game             Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
-
   }
 
   model Game {
-
-
     id              Int              @id @default(autoincrement())
     name            String            
     score           Score[]
   }
-    
+  
+  model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt   DateTime
+}
   

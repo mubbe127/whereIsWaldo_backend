@@ -1,13 +1,15 @@
 import dotenv from "dotenv";
+import expressSession from 'express-session';
 // Load the appropriate environment file based on NODE_ENV
 const envFile =
   process.env.NODE_ENV === "production"
     ? ".env.production"
     : ".env.development";
 dotenv.config({ path: envFile });
-import path from "node:path";
 import express, { Router } from "express";
-import session from 'express-session'
+import prisma from "./model/prismaClient.js";
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
+
 import cors from 'cors';
 import { checkPosition, startGame, storeUsername } from "./controller/controller.js";
 
@@ -18,26 +20,29 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, // No cookies or credentials involved
 }));
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", ["https://wereiswaldo-mubbe127.netlify.app"] ); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
-app.use(session({
-  secret: 'your-secret-key',  // Replace with a strong secret key
-  resave: false,              // Don't save unchanged sessions
-  saveUninitialized: false,    // Don't save uninitialized sessions
-  cookie: {
-      maxAge: 10 * 60 * 1000, // Cookie expiration time in milliseconds
-      httpOnly: true,         // Prevent JavaScript access to the cookie
-      secure: true,           // Ensure cookies are sent over HTTPS only
-      sameSite: 'none',       // Allow cross-origin cookies (e.g., if frontend and backend are on different domains)
-  }
-}));
+app.use(
+  expressSession({
+    cookie: {
+     maxAge: 7 * 24 * 60 * 60 * 1000 // ms
+    },
+    secret: 'a santa at nasa',
+    resave: true,
+    saveUninitialized: true,
+    store: new PrismaSessionStore(
+      prisma,
+      {
+        checkPeriod: 2 * 60 * 1000,  //ms
+        dbRecordIdIsSessionId: true,
+        dbRecordIdFunction: undefined,
+      }
+    )
+  })
+);
   
 app.post('/api/game/:gameId', checkPosition)
 app.get('/api/game/:gameId', startGame)
